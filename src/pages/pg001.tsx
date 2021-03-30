@@ -26,7 +26,7 @@ const page: NextPage<IProps> = ({ count, page, data }) => {
 				<title>建材分类</title>
 			</Head>
 			<Row justify='end'>
-				<Col span={4}>
+				<Col span={5}>
 					<C001></C001>
 				</Col>
 			</Row>
@@ -77,11 +77,22 @@ export default page;
  */
 function C001() {
 	return <>
-		<Button>
-			<Link href='/pg003'>
-				新增按钮
+		<Row>
+			<Col>
+				<Button>
+					<Link href='/pg003'>
+						新增
 			</Link>
-		</Button>
+				</Button>
+			</Col>
+			<Col>
+				<Button>
+					<Link href='/pg008'>
+						首页轮播图
+			</Link>
+				</Button>
+			</Col>
+		</Row>
 	</>;
 }
 

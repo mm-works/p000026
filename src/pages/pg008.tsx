@@ -3,11 +3,11 @@ import Head from 'next/head';
 import { useState } from 'react';
 import an49 from '@mmstudio/an000049';
 import { Col, Row, Spacer, useToasts } from '@geist-ui/react';
-import Button from '../../components/c002';
+import Button from '../components/c002';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperCore, { Autoplay, EffectCoverflow, Keyboard } from 'swiper/core';
 import 'swiper/swiper.min.css';
-import getfileuri from '../../atoms/a001';
+import getfileuri from '../atoms/a001';
 import Uppy from '@uppy/core';
 import XHRUpload from '@uppy/xhr-upload';
 import { DashboardModal, useUppy } from '@uppy/react';
@@ -15,40 +15,37 @@ import '@uppy/core/dist/style.css';
 import '@uppy/dashboard/dist/style.css';
 import '@uppy/progress-bar/dist/style.css';
 import '@uppy/status-bar/dist/style.css';
-import { Result as R1 } from '../api/pg007/s001/[mid]';
-import { Result as R2 } from '../api/pg007/s002/[id]';
+import { Result as R1 } from './api/pg008/s001';
+import { Result as R2 } from './api/pg008/s002/[id]';
 
-const s002 = '/api/pg007/s002';
-const s001 = '/api/pg007/s001';
+const s002 = '/api/pg008/s002';
+const s001 = '/api/pg008/s001';
 SwiperCore.use([Autoplay, Keyboard, EffectCoverflow]);
 
 interface IProps {
-	data: ITbpictures[];
-	mid: string;
+	data: ITbswiper[];
 }
 
 /**
- * 材料轮播图片
+ * 首页轮播图
  */
-const page: NextPage<IProps> = ({ data, mid }) => {
+const page: NextPage<IProps> = ({ data }) => {
 	const [imgs, setimgs] = useState(data);
 	return <>
 		<Head>
-			<title>材料轮播图片</title>
+			<title>首页轮播图</title>
 		</Head>
 		<Spacer y={6} />
-		<C002 mid={mid} onUploadedFiles={(files) => {
+		<C002 onUploadedFiles={(files) => {
 			setimgs(imgs.concat(files.map((file) => {
 				return {
-					id: file.id,
-					mid,
-					src: file.fid
+					id: file.id
 				}
 			})));
 		}}></C002>
 		<Spacer y={3} />
 		<C001 data={imgs.map((it) => {
-			return getfileuri(it.src);
+			return getfileuri(it.id);
 		})}></C001>
 		<Spacer y={3} />
 		<C003 data={imgs} ></C003>
@@ -61,17 +58,13 @@ export const config: PageConfig = {
 
 export default page;
 
-export const getServerSideProps: GetServerSideProps<IProps, { mid: string; }> = async (context) => {
-	const mid = context.params.mid;
+export const getServerSideProps: GetServerSideProps<IProps> = async () => {
 	const db = an49();
-	const dt = db<ITbpictures>('pictures');
-	const data = await dt.select('*').where({
-		mid
-	});
+	const dt = db<ITbswiper>('swiper');
+	const data = await dt.select('*');
 	return {
 		props: {
-			data,
-			mid
+			data
 		}
 	};
 };
@@ -101,8 +94,8 @@ function C001({ data }: { data: string[] }) {
 /**
  * 上传按钮
  */
-function C002({ onUploadedFiles, mid }: { onUploadedFiles(files: R1[]): void; mid: string; }) {
-	const endpoint = `${s001}/${mid}`;
+function C002({ onUploadedFiles }: { onUploadedFiles(files: R1[]): void; }) {
+	const endpoint = `${s001}`;
 	const [uploadedfiles, setuploadedfiles] = useState<R1[]>([]);
 	const [, toast] = useToasts();
 	const [open, setopen] = useState(false);
@@ -148,11 +141,11 @@ function C002({ onUploadedFiles, mid }: { onUploadedFiles(files: R1[]): void; mi
 	</>
 }
 
-function C003({ data }: { data: ITbpictures[]; }) {
+function C003({ data }: { data: ITbswiper[]; }) {
 	const [, toast] = useToasts();
 	return <ol>
 		{data.map((it, key) => {
-			const src = getfileuri(it.src);
+			const src = getfileuri(it.id);
 			const id = it.id;
 			return <li key={key}>
 				<Row>

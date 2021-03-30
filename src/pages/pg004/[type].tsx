@@ -84,7 +84,7 @@ function C001({ type }: { type: number; }) {
 	return <>
 		<Button>
 			<Link href={href}>
-				新增按钮
+				新增
 			</Link>
 		</Button>
 	</>;

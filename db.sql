@@ -65,3 +65,11 @@ COMMENT ON TABLE pictures IS '图片';
 COMMENT ON COLUMN pictures.id IS 'ID';
 COMMENT ON COLUMN pictures.mid IS 'material.id';
 COMMENT ON COLUMN pictures.src IS '文件地址';
+
+DROP TABLE IF EXISTS swiper;
+CREATE TABLE swiper (
+	id text not null
+) WITH (oids = false);
+
+COMMENT ON TABLE swiper IS '首页轮播图片';
+COMMENT ON COLUMN swiper.id IS '图片ID';
