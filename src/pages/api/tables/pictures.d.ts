@@ -1,7 +1,7 @@
 /**
  * 图片
  */
-interface ITbpitures {
+interface ITbpictures {
 	/**
 	 * ID
 	 */

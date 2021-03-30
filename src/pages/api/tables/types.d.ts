@@ -3,6 +3,10 @@
  */
 interface ITbtypes {
 	/**
+	 * ID
+	 */
+	id: string;
+	/**
 	 * 类型标识
 	 */
 	type: number;

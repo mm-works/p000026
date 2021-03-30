@@ -1,33 +1,32 @@
-import { GetServerSideProps, NextPage } from 'next';
-import anylogger from 'anylogger';
+import { GetServerSideProps, NextPage, PageConfig } from 'next';
 import Head from 'next/head';
-import Link from 'next/link';
-import { Col, Modal, Row, Table, useModal, useToasts } from '@geist-ui/react';
 import an49 from '@mmstudio/an000049';
-import Button from '../components/c002';
-import Pagination from '../components/c001';
-import { Result as R1 } from './api/pg001/s001/[id]';
+import { Col, Modal, Row, Table, useModal, useToasts } from '@geist-ui/react';
+import Link from 'next/link';
+import Button from '../../components/c002';
+import Pagination from '../../components/c001';
+import { Result as R1 } from '../api/pg004/s001/[id]';
 
-const s001 = '/api/pg001/s001';
-const logger = anylogger('pg001');
+const s001 = '/api/pg004/s001';
 interface IProps {
-	page: number;	// 当前页页码
+	page: number;
 	count: number;
-	data: ITbtypes[];
+	data: ITbmaterial[];
+	type: number;
 }
 
 /**
- * 建材分类
+ * 建材列表
  */
-const page: NextPage<IProps> = ({ count, page, data }) => {
+const page: NextPage<IProps> = ({ count, data, page, type }) => {
 	return (
 		<>
 			<Head>
-				<title>建材分类</title>
+				<title>建材列表</title>
 			</Head>
 			<Row justify='end'>
 				<Col span={4}>
-					<C001></C001>
+					<C001 type={type}></C001>
 				</Col>
 			</Row>
 			<Row>
@@ -44,66 +43,90 @@ const page: NextPage<IProps> = ({ count, page, data }) => {
 	);
 };
 
-export const getServerSideProps: GetServerSideProps<IProps> = async (context) => {
-	const pagesize = 10;
-	const page = Number(context.query.page) || 1;
-	const offset = (page - 1) * pagesize;
-	const db = an49();
-	const dt1 = db<ITbtypes>('types');
-	const [{ size }] = await dt1.count('*', { as: 'size' });
-	const total = Number(size);
-	let count = parseInt(`${total / pagesize}`);
-	const dt2 = db<ITbtypes>('types');
-	const data = await dt2.select('id', 'name', 'type', 'sort').limit(pagesize).offset(offset).orderBy('sort', 'desc');
-	if (total % pagesize) {
-		++count;
-	}
-	logger.debug('page', page);
-	logger.debug('count', count);
-	logger.debug('data', data);
-	return {
-		props: {
-			count,
-			data,
-			page
-		}
-	};
+export const config: PageConfig = {
+	amp: false
 };
 
 export default page;
 
+export const getServerSideProps: GetServerSideProps<IProps, { type: string; }> = async (context) => {
+	const type = Number(context.params.type);
+	const pagesize = 10;
+	const page = Number(context.query.page) || 1;
+	const offset = (page - 1) * pagesize;
+	const db = an49();
+	const dt1 = db<ITbmaterial>('material');
+	const [{ size }] = await dt1.count('*', { as: 'size' });
+	const total = Number(size);
+	let count = parseInt(`${total / pagesize}`);
+	const dt2 = db<ITbmaterial>('material');
+	const data = await dt2.select('*').where({
+		type
+	}).limit(pagesize).offset(offset).orderBy('sort', 'desc');
+	if (total % pagesize) {
+		++count;
+	}
+	return {
+		props: {
+			page,
+			count,
+			data,
+			type
+		}
+	};
+};
+
 /**
  * 新增按钮
  */
-function C001() {
+function C001({ type }: { type: number; }) {
+	const href = `/pg005/${type}`;
 	return <>
 		<Button>
-			<Link href='/pg003'>
+			<Link href={href}>
 				新增按钮
 			</Link>
 		</Button>
 	</>;
 }
 
+function formatdt(tm: number) {
+	if (!tm) {
+		return '';
+	}
+	return new Date(Number(tm)).toLocaleDateString();
+}
+
+function formatdesc(val: string) {
+	if (!val || val.length < 20) {
+		return val;
+	}
+	return val.substr(0, 20) + '...';
+}
+
 /**
  * 列表
  */
-function C002({ data: original }: { data: ITbtypes[]; }) {
+function C002({ data: original }: { data: ITbmaterial[]; }) {
 	const data = original.map((it) => {
 		const name = <>
-			<Link href={`/pg002/${it.id}`}>{it.name}</Link>
+			<Link href={`/pg006/${it.id}`}>{it.name}</Link>
 		</>;
 		const op = <>
 			<Button>
-				<Link href={`/pg002/${it.id}`}>编辑</Link>
+				<Link href={`/pg006/${it.id}`}>编辑</Link>
 			</Button>
 			<Button>
-				<Link href={`/pg004/${it.type}`}>材料管理</Link>
+				<Link href={`/pg007/${it.id}`}>轮播图片</Link>
 			</Button>
 			<C004 data={it}></C004>
 		</>;
 		return {
 			...it,
+			description: formatdesc(it.description),
+			state: it.state === 2 ? '已下架' : '在售',
+			tmup: formatdt(it.tmup),
+			tmdown: formatdt(it.tmdown),
 			name,
 			op
 		};
@@ -111,7 +134,13 @@ function C002({ data: original }: { data: ITbtypes[]; }) {
 	return <>
 		<Table data={data}>
 			<Table.Column prop='name' label='名称' ></Table.Column>
-			<Table.Column prop='type' label='类型值'></Table.Column>
+			<Table.Column prop='color' label='颜色' ></Table.Column>
+			<Table.Column prop='specifications' label='规格' ></Table.Column>
+			<Table.Column prop='description' label='描述' ></Table.Column>
+			<Table.Column prop='no' label='存货数量' ></Table.Column>
+			<Table.Column prop='state' label='状态：1 在售 2 已下架' ></Table.Column>
+			<Table.Column prop='tmup' label='上架时间'></Table.Column>
+			<Table.Column prop='tmdown' label='下架时间'></Table.Column>
 			<Table.Column prop='sort' label='优先级'></Table.Column>
 			<Table.Column prop='op' label='操作'></Table.Column>
 		</Table>
@@ -140,7 +169,7 @@ function C004({ data }: { data: ITbtypes; }) {
 			<Modal.Title>提示</Modal.Title>
 			<Modal.Subtitle>删除提示</Modal.Subtitle>
 			<Modal.Content>
-				<p>确定要删除该分类吗？删除时需要保证该分类下所有材料已删除。</p>
+				<p>确定要删除吗？</p>
 			</Modal.Content>
 			<Modal.Action passive onClick={() => {
 				setVisible(false);

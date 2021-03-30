@@ -37,11 +37,11 @@ interface ITbmaterial {
 	/**
 	 * 上架时间
 	 */
-	tmup: bigint;
+	tmup: number;
 	/**
 	 * 下架时间
 	 */
-	tmdown: bigint;
+	tmdown: number;
 	/**
 	 * 排序
 	 */
