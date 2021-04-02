@@ -4,7 +4,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import an49 from '@mmstudio/an000049';
 import { Col, Input, Row, Spacer, Text, useToasts } from '@geist-ui/react';
 import Button from '../../components/c002';
-import { Message as M1, Query as Q1, Result as R1 } from '../api/pg002/s001';
+import { Message as M1, Result as R1 } from '../api/pg002/s001';
 import getfileuri from '../../atoms/a001';
 import Uppy from '@uppy/core';
 import XHRUpload from '@uppy/xhr-upload';
