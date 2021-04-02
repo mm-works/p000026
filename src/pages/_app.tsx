@@ -3,6 +3,7 @@ import { CssBaseline, GeistProvider } from '@geist-ui/react';
 import '../../styles/globals.css';
 import { SWRConfig } from 'swr';
 import anylogger from 'anylogger';
+import Header from '../components/c005';
 
 const logger = anylogger('app');
 
@@ -23,6 +24,7 @@ function App({ Component, pageProps }: AppInitialProps & AppContext) {
 		>
 			<GeistProvider>
 				<CssBaseline />
+				<Header />
 				<Component {...pageProps} />
 			</GeistProvider>
 		</SWRConfig>

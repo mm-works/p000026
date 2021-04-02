@@ -5,13 +5,9 @@ import { ReactNode, useState } from 'react';
 import { Col, Input, Row, Spacer, useToasts } from '@geist-ui/react';
 import Button from '../components/c002';
 import { Message as M1, Result as R1 } from './api/pg003/s001';
-import Uppy from '@uppy/core';
-import XHRUpload from '@uppy/xhr-upload';
-import { DashboardModal, useUppy } from '@uppy/react';
-import '@uppy/core/dist/style.css';
-import '@uppy/dashboard/dist/style.css';
-import { Message as M2, Query as Q2, Result as R2 } from './api/pg003/s002';
+import { Result as R2 } from './api/pg003/s002';
 import getfileuri from '../atoms/a001';
+import Uploader from '../components/c004';
 
 const s002 = '/api/pg003/s002';
 const s001 = '/api/pg003/s001';
@@ -99,56 +95,20 @@ function C001({ children }: { children: ReactNode; }) {
 function C002({ onChange }: { onChange(value: string): void }) {
 	const endpoint = `${s002}`;
 	const [, toast] = useToasts();
-	const [open, setopen] = useState(false);
 	const [cover, setcover] = useState('');
-	const uppy = useUppy(() => {
-		const uppy = Uppy({
-			allowMultipleUploads: false,
-			autoProceed: true,
-			debug: true,
-			restrictions: {
-				maxFileSize: 1000000,
-				maxNumberOfFiles: 10,
-				minNumberOfFiles: 1,
-				allowedFileTypes: ['image/*', 'video/*']
-			}
-		});
-		uppy.use(XHRUpload, {
-			fieldName: 'file',
-			formData: true,
-			method: 'PUT',
-			endpoint
-		});
-		uppy.on('complete', (result) => {
-			// 以下代码可将上传的内容变成下载链接,放在页面上.
-			const [success] = result.successful;
-			if (success) {
-				const content = success.response.body as R2;
-				if (content.ok === true) {
-					toast({
-						text: '上传成功',
-						type: 'success'
-					});
-					setopen(false);
-					setcover(content.id)
-					onChange(content.id);
-				} else {
-					toast({
-						text: content.message,
-						type: 'error'
-					});
-				}
-			}
-		});
-		return uppy;
-	});
 	return <C001>
 		{cover && <img src={getfileuri(cover)} />}
-		<Button onClick={() => {
-			setopen(true);
-		}} >上传</Button>
-		<DashboardModal uppy={uppy} open={open} onRequestClose={() => {
-			setopen(false);
+		<Uploader endpoint={endpoint} multiple={false} onChange={(v: R2) => {
+			const content = v;
+			if (content.ok === true) {
+				setcover(content.id)
+				onChange(content.id);
+			} else {
+				toast({
+					text: content.message,
+					type: 'error'
+				});
+			}
 		}} />
 	</C001>;
 }

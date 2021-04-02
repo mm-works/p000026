@@ -8,15 +8,9 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperCore, { Autoplay, EffectCoverflow, Keyboard } from 'swiper/core';
 import 'swiper/swiper.min.css';
 import getfileuri from '../../atoms/a001';
-import Uppy from '@uppy/core';
-import XHRUpload from '@uppy/xhr-upload';
-import { DashboardModal, useUppy } from '@uppy/react';
-import '@uppy/core/dist/style.css';
-import '@uppy/dashboard/dist/style.css';
-import '@uppy/progress-bar/dist/style.css';
-import '@uppy/status-bar/dist/style.css';
 import { Result as R1 } from '../api/pg007/s001/[mid]';
 import { Result as R2 } from '../api/pg007/s002/[id]';
+import Uploader from '../../components/c004';
 
 const s002 = '/api/pg007/s002';
 const s001 = '/api/pg007/s001';
@@ -103,47 +97,11 @@ function C001({ data }: { data: string[] }) {
  */
 function C002({ onUploadedFiles, mid }: { onUploadedFiles(files: R1[]): void; mid: string; }) {
 	const endpoint = `${s001}/${mid}`;
-	const [uploadedfiles, setuploadedfiles] = useState<R1[]>([]);
-	const [, toast] = useToasts();
-	const [open, setopen] = useState(false);
-	const uppy = useUppy(() => {
-		const uppy = Uppy({
-			allowMultipleUploads: true,
-			autoProceed: true,
-			debug: true,
-			restrictions: {
-				maxFileSize: 1000000,
-				maxNumberOfFiles: 10,
-				minNumberOfFiles: 1,
-				allowedFileTypes: ['image/*', 'video/*']
-			}
-		});
-		uppy.use(XHRUpload, {
-			fieldName: 'file',
-			formData: true,
-			method: 'PUT',
-			endpoint
-		});
-		uppy.on('complete', (result) => {
-			// 以下代码可将上传的内容变成下载链接,放在页面上.
-			const [success] = result.successful;
-			if (success) {
-				toast({ text: '上传成功' });
-				const content = success.response.body as R1;
-				uploadedfiles.push(content);
-				setuploadedfiles(uploadedfiles);
-			}
-		});
-		return uppy;
-	});
 	return <>
-		<Button onClick={() => {
-			setopen(true);
-		}} >上传</Button>
-		<DashboardModal uppy={uppy} open={open} onRequestClose={() => {
-			setopen(false);
-			onUploadedFiles(uploadedfiles);
-			setuploadedfiles([]);
+		<Uploader endpoint={endpoint} multiple={true} onChange={(v: R1) => {
+			setTimeout(() => {
+				onUploadedFiles([v]);
+			}, 100);
 		}} />
 	</>
 }

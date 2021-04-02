@@ -15,6 +15,10 @@ interface ITbmaterial {
 	 */
 	type: number;
 	/**
+	 * 封面
+	 */
+	cover: string;
+	/**
 	 * 颜色
 	 */
 	color: string;

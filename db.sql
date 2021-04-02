@@ -3,6 +3,7 @@ CREATE TABLE material (
 	id text not null,
 	name text not null,
 	type smallint,
+	cover text,
 	color text,
 	price smallint,
 	specifications text,
@@ -18,6 +19,7 @@ COMMENT ON TABLE material IS '建材';
 COMMENT ON COLUMN material.id IS 'ID';
 COMMENT ON COLUMN material.name IS '名称';
 COMMENT ON COLUMN material.type IS '类型:types.type';
+COMMENT ON COLUMN material.cover IS '封面';
 COMMENT ON COLUMN material.color IS '颜色';
 COMMENT ON COLUMN material.price IS '价格';
 COMMENT ON COLUMN material.specifications IS '规格';

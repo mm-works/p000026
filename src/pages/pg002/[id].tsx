@@ -1,17 +1,13 @@
-import { GetServerSideProps, GetStaticPaths, GetStaticProps, NextPage, PageConfig } from 'next';
+import { GetServerSideProps, NextPage, PageConfig } from 'next';
 import Head from 'next/head';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import an49 from '@mmstudio/an000049';
 import { Col, Input, Row, Spacer, Text, useToasts } from '@geist-ui/react';
 import Button from '../../components/c002';
 import { Message as M1, Result as R1 } from '../api/pg002/s001';
 import getfileuri from '../../atoms/a001';
-import Uppy from '@uppy/core';
-import XHRUpload from '@uppy/xhr-upload';
-import { DashboardModal, useUppy } from '@uppy/react';
-import '@uppy/core/dist/style.css';
-import '@uppy/dashboard/dist/style.css';
 import { Result as R2 } from '../api/pg002/s002';
+import Uploader from '../../components/c004';
 
 const s002 = '/api/pg002/s002';
 const s001 = '/api/pg002/s001';
@@ -111,50 +107,13 @@ function C001({ children }: { children: ReactNode; }) {
  */
 function C002({ onChange, value }: { onChange(value: string): void; value: string }) {
 	const endpoint = `${s002}`;
-	const [, toast] = useToasts();
-	const [open, setopen] = useState(false);
 	const [cover, setcover] = useState(value);
-	const uppy = useUppy(() => {
-		const uppy = Uppy({
-			allowMultipleUploads: false,
-			autoProceed: true,
-			debug: true,
-			restrictions: {
-				maxFileSize: 1000000,
-				maxNumberOfFiles: 10,
-				minNumberOfFiles: 1,
-				allowedFileTypes: ['image/*', 'video/*']
-			}
-		});
-		uppy.use(XHRUpload, {
-			fieldName: 'file',
-			formData: true,
-			method: 'PUT',
-			endpoint
-		});
-		uppy.on('complete', (result) => {
-			const [success] = result.successful;
-			if (success) {
-				const content = success.response.body as R2;
-				toast({
-					text: '上传成功',
-					type: 'success'
-				});
-				setopen(false);
-				setcover(content.id)
-				onChange(content.id);
-			}
-		});
-		return uppy;
-	});
 	return <C001>
 		<Text>封面图片</Text>
 		{cover && <img src={getfileuri(cover)} />}
-		<Button onClick={() => {
-			setopen(true);
-		}} >上传</Button>
-		<DashboardModal uppy={uppy} open={open} onRequestClose={() => {
-			setopen(false);
-		}} />
+		<Uploader multiple={false} endpoint={endpoint} onChange={(v: R2) => {
+			setcover(v.id)
+			onChange(v.id);
+		}} ></Uploader>
 	</C001>;
 }

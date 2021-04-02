@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Button from '../../components/c002';
 import Pagination from '../../components/c001';
 import { Result as R1 } from '../api/pg004/s001/[id]';
+import getfileuri from '../../atoms/a001';
 
 const s001 = '/api/pg004/s001';
 interface IProps {
@@ -112,6 +113,7 @@ function C002({ data: original }: { data: ITbmaterial[]; }) {
 		const name = <>
 			<Link href={`/pg006/${it.id}`}>{it.name}</Link>
 		</>;
+		const cover = it.cover && <img src={getfileuri(it.cover)} />;
 		const op = <>
 			<Button>
 				<Link href={`/pg006/${it.id}`}>编辑</Link>
@@ -123,6 +125,7 @@ function C002({ data: original }: { data: ITbmaterial[]; }) {
 		</>;
 		return {
 			...it,
+			cover,
 			description: formatdesc(it.description),
 			state: it.state === 2 ? '已下架' : '在售',
 			tmup: formatdt(it.tmup),
@@ -134,6 +137,7 @@ function C002({ data: original }: { data: ITbmaterial[]; }) {
 	return <>
 		<Table data={data}>
 			<Table.Column prop='name' label='名称' ></Table.Column>
+			<Table.Column prop='cover' label='封面图片' ></Table.Column>
 			<Table.Column prop='color' label='颜色' ></Table.Column>
 			<Table.Column prop='price' label='价格' ></Table.Column>
 			<Table.Column prop='specifications' label='规格' ></Table.Column>

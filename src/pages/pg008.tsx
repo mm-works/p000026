@@ -8,15 +8,9 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperCore, { Autoplay, EffectCoverflow, Keyboard } from 'swiper/core';
 import 'swiper/swiper.min.css';
 import getfileuri from '../atoms/a001';
-import Uppy from '@uppy/core';
-import XHRUpload from '@uppy/xhr-upload';
-import { DashboardModal, useUppy } from '@uppy/react';
-import '@uppy/core/dist/style.css';
-import '@uppy/dashboard/dist/style.css';
-import '@uppy/progress-bar/dist/style.css';
-import '@uppy/status-bar/dist/style.css';
 import { Result as R1 } from './api/pg008/s001';
 import { Result as R2 } from './api/pg008/s002/[id]';
+import Uploader from '../components/c004';
 
 const s002 = '/api/pg008/s002';
 const s001 = '/api/pg008/s001';
@@ -36,13 +30,7 @@ const page: NextPage<IProps> = ({ data }) => {
 			<title>首页轮播图</title>
 		</Head>
 		<Spacer y={6} />
-		<C002 onUploadedFiles={(files) => {
-			setimgs(imgs.concat(files.map((file) => {
-				return {
-					id: file.id
-				}
-			})));
-		}}></C002>
+		<C002 />
 		<Spacer y={3} />
 		<C001 data={imgs.map((it) => {
 			return getfileuri(it.id);
@@ -94,49 +82,10 @@ function C001({ data }: { data: string[] }) {
 /**
  * 上传按钮
  */
-function C002({ onUploadedFiles }: { onUploadedFiles(files: R1[]): void; }) {
-	const endpoint = `${s001}`;
-	const [uploadedfiles, setuploadedfiles] = useState<R1[]>([]);
-	const [, toast] = useToasts();
-	const [open, setopen] = useState(false);
-	const uppy = useUppy(() => {
-		const uppy = Uppy({
-			allowMultipleUploads: true,
-			autoProceed: true,
-			debug: true,
-			restrictions: {
-				maxFileSize: 1000000,
-				maxNumberOfFiles: 10,
-				minNumberOfFiles: 1,
-				allowedFileTypes: ['image/*', 'video/*']
-			}
-		});
-		uppy.use(XHRUpload, {
-			fieldName: 'file',
-			formData: true,
-			method: 'PUT',
-			endpoint
-		});
-		uppy.on('complete', (result) => {
-			// 以下代码可将上传的内容变成下载链接,放在页面上.
-			const [success] = result.successful;
-			if (success) {
-				toast({ text: '上传成功' });
-				const content = success.response.body as R1;
-				uploadedfiles.push(content);
-				setuploadedfiles(uploadedfiles);
-			}
-		});
-		return uppy;
-	});
+function C002() {
 	return <>
-		<Button onClick={() => {
-			setopen(true);
-		}} >上传</Button>
-		<DashboardModal uppy={uppy} open={open} onRequestClose={() => {
-			setopen(false);
-			onUploadedFiles(uploadedfiles);
-			setuploadedfiles([]);
+		<Uploader multiple={true} endpoint={s001} onChange={(v: R1) => {
+			window.location.reload();
 		}} />
 	</>
 }
