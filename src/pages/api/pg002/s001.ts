@@ -15,10 +15,6 @@ export type Result = {
 
 export type Message = ITbtypes;
 
-export type Query = {
-
-}
-
 /**
  * 保存类型
  */
@@ -26,7 +22,7 @@ const handler = nextConnect<NextApiRequest, NextApiResponse<Result>>();
 
 handler.put(async (req, res) => {
 	logger.debug('msg body:', typeof req.body);
-	const { id, name, sort, type } = req.body as Message;
+	const { id, name, sort, type, cover } = req.body as Message;
 	if (!id) {
 		res.status(500).json({ ok: false, message: 'id为空' });
 		return;
@@ -35,6 +31,7 @@ handler.put(async (req, res) => {
 	const tb = db<ITbtypes>('types');
 	await tb.update({
 		name,
+		cover,
 		sort,
 		type
 	}).where({ id });

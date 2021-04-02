@@ -7,6 +7,7 @@ import an49 from '@mmstudio/an000049';
 import Button from '../components/c002';
 import Pagination from '../components/c001';
 import { Result as R1 } from './api/pg001/s001/[id]';
+import getfileuri from '../atoms/a001';
 
 const s001 = '/api/pg001/s001';
 const logger = anylogger('pg001');
@@ -54,7 +55,7 @@ export const getServerSideProps: GetServerSideProps<IProps> = async (context) =>
 	const total = Number(size);
 	let count = parseInt(`${total / pagesize}`);
 	const dt2 = db<ITbtypes>('types');
-	const data = await dt2.select('id', 'name', 'type', 'sort').limit(pagesize).offset(offset).orderBy('sort', 'desc');
+	const data = await dt2.select('*').limit(pagesize).offset(offset).orderBy('sort', 'desc');
 	if (total % pagesize) {
 		++count;
 	}
@@ -104,6 +105,9 @@ function C002({ data: original }: { data: ITbtypes[]; }) {
 		const name = <>
 			<Link href={`/pg002/${it.id}`}>{it.name}</Link>
 		</>;
+		const cover = it.cover && <>
+			<img src={getfileuri(it.cover)} />
+		</>;
 		const op = <>
 			<Button>
 				<Link href={`/pg002/${it.id}`}>编辑</Link>
@@ -116,7 +120,8 @@ function C002({ data: original }: { data: ITbtypes[]; }) {
 		return {
 			...it,
 			name,
-			op
+			op,
+			cover
 		};
 	});
 	return <>
@@ -124,6 +129,7 @@ function C002({ data: original }: { data: ITbtypes[]; }) {
 			<Table.Column prop='name' label='名称' ></Table.Column>
 			<Table.Column prop='type' label='类型值'></Table.Column>
 			<Table.Column prop='sort' label='优先级'></Table.Column>
+			<Table.Column prop='cover' label='封面图片'></Table.Column>
 			<Table.Column prop='op' label='操作'></Table.Column>
 		</Table>
 	</>;

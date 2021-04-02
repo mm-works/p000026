@@ -15,6 +15,10 @@ interface ITbtypes {
 	 */
 	name: string;
 	/**
+	 * 封面
+	 */
+	cover: string;
+	/**
 	 * 排序
 	 */
 	sort: number;

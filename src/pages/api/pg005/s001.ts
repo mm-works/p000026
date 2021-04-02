@@ -14,18 +14,7 @@ export type Result = {
 	message: string;
 };
 
-export type Message = {
-	name: string;
-	color: string;
-	type: number;
-	sort: number;
-	description: string;
-	no: number;
-	specifications: string;
-	state: number;
-	tmdown: number;
-	tmup: number;
-}
+export type Message = Omit<ITbmaterial, 'id'>;
 
 /**
  * 新增建材服务

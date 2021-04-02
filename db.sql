@@ -4,6 +4,7 @@ CREATE TABLE material (
 	name text not null,
 	type smallint,
 	color text,
+	price smallint,
 	specifications text,
 	description text,
 	no smallint,
@@ -18,6 +19,7 @@ COMMENT ON COLUMN material.id IS 'ID';
 COMMENT ON COLUMN material.name IS '名称';
 COMMENT ON COLUMN material.type IS '类型:types.type';
 COMMENT ON COLUMN material.color IS '颜色';
+COMMENT ON COLUMN material.price IS '价格';
 COMMENT ON COLUMN material.specifications IS '规格';
 COMMENT ON COLUMN material.description IS '描述';
 COMMENT ON COLUMN material.no IS '存货数量';
@@ -26,13 +28,12 @@ COMMENT ON COLUMN material.tmup IS '上架时间';
 COMMENT ON COLUMN material.tmdown IS '下架时间';
 COMMENT ON COLUMN material.sort IS '排序';
 
--- insert into material(fld001,fld002,fld003) values('001', '新闻资讯', 1),('002', '政策资讯', 2),('003', '问答', 3);
-
 DROP TABLE IF EXISTS types;
 CREATE TABLE types (
 	id text not null,
 	type smallint,
 	name text,
+	cover text,
 	sort smallint
 ) WITH (oids = false);
 
@@ -40,6 +41,7 @@ COMMENT ON TABLE types IS '建材类型';
 COMMENT ON COLUMN types.id IS 'ID';
 COMMENT ON COLUMN types.type IS '类型标识';
 COMMENT ON COLUMN types.name IS '类型说明';
+COMMENT ON COLUMN types.cover IS '封面';
 COMMENT ON COLUMN types.sort IS '排序';
 
 insert into types(id,type,name,sort) values 

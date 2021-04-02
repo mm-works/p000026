@@ -26,7 +26,7 @@ const handler = nextConnect<NextApiRequest, NextApiResponse<Result>>();
 
 handler.put(async (req, res) => {
 	logger.debug('msg body:', req.body);
-	const { id, name, sort, type, color, description, no, specifications, state, tmdown, tmup } = req.body as Message;
+	const { id, name, sort, type, color, price, description, no, specifications, state, tmdown, tmup } = req.body as Message;
 	if (!id) {
 		res.status(500).json({ ok: false, message: 'id为空' });
 		return;
@@ -34,7 +34,7 @@ handler.put(async (req, res) => {
 	const db = an49();
 	const tb = db<ITbmaterial>('material');
 	await tb.update({
-		name, sort, type, color, description, no, specifications, state, tmdown, tmup
+		name, sort, type, color, price, description, no, specifications, state, tmdown, tmup
 	}).where({ id });
 	res.status(200).json({ ok: true });
 });

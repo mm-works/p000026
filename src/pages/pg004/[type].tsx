@@ -135,6 +135,7 @@ function C002({ data: original }: { data: ITbmaterial[]; }) {
 		<Table data={data}>
 			<Table.Column prop='name' label='名称' ></Table.Column>
 			<Table.Column prop='color' label='颜色' ></Table.Column>
+			<Table.Column prop='price' label='价格' ></Table.Column>
 			<Table.Column prop='specifications' label='规格' ></Table.Column>
 			<Table.Column prop='description' label='描述' ></Table.Column>
 			<Table.Column prop='no' label='存货数量' ></Table.Column>
@@ -157,7 +158,7 @@ function C003({ page, count }: { page: number; count: number; }) {
 /**
  * 删除按钮
  */
-function C004({ data }: { data: ITbtypes; }) {
+function C004({ data }: { data: ITbmaterial; }) {
 	const { setVisible, bindings } = useModal();
 	const [, toast] = useToasts();
 	const url = `${s001}/${data.id}`;

@@ -141,6 +141,9 @@ function C002({ onUploadedFiles }: { onUploadedFiles(files: R1[]): void; }) {
 	</>
 }
 
+/**
+ * 操作列表
+ */
 function C003({ data }: { data: ITbswiper[]; }) {
 	const [, toast] = useToasts();
 	return <ol>

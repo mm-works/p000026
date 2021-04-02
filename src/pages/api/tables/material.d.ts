@@ -19,6 +19,10 @@ interface ITbmaterial {
 	 */
 	color: string;
 	/**
+	 * 价格
+	 */
+	price: number;
+	/**
 	 * 规格
 	 */
 	specifications: string;

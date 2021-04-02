@@ -27,7 +27,7 @@ const handler = nextConnect<NextApiRequest, NextApiResponse<Result>>();
 
 handler.put(async (req, res) => {
 	logger.debug('msg body:', req.body);
-	const { name, sort, type } = req.body as Message;
+	const { name, sort, type, cover } = req.body as Message;
 	const db = an49();
 	const dt = db<ITbtypes>('types');
 	const id = an8();
@@ -35,7 +35,8 @@ handler.put(async (req, res) => {
 		id,
 		name,
 		sort,
-		type
+		type,
+		cover
 	});
 	res.status(200).json({ ok: true });
 });

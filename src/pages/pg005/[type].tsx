@@ -22,6 +22,7 @@ const page: NextPage<IProps> = ({ type }) => {
 	const [description, setdescription] = useState('');
 	const [no, setno] = useState(999);
 	const [state, setstate] = useState(1);
+	const [price, setprice] = useState(99);
 	const [tmup, settmup] = useState<number>();
 	const [tmdown, settmdown] = useState<number>();
 	const [sort, setsort] = useState(0);
@@ -38,6 +39,9 @@ const page: NextPage<IProps> = ({ type }) => {
 			<C001><Input onChange={(e) => {
 				setcolor(e.target.value);
 			}}>颜色</Input></C001>
+			<C001><Input value={`${price}`} type='number' onChange={(e) => {
+				setprice(Number(e.target.value));
+			}}>价格</Input></C001>
 			<C001><Input onChange={(e) => {
 				setspecifications(e.target.value);
 			}}>规格</Input></C001>
@@ -69,6 +73,7 @@ const page: NextPage<IProps> = ({ type }) => {
 						name,
 						color,
 						type,
+						price,
 						sort,
 						description,
 						no,

@@ -19,6 +19,7 @@ interface IProps {
 const page: NextPage<IProps> = ({ data }) => {
 	const id = data.id;
 	const type = data.type;
+	const [price, setprice] = useState(data.price);
 	const [name, setname] = useState(data.name);
 	const [color, setcolor] = useState(data.color);
 	const [specifications, setspecifications] = useState(data.specifications);
@@ -40,6 +41,9 @@ const page: NextPage<IProps> = ({ data }) => {
 		<C001><Input value={color} onChange={(e) => {
 			setcolor(e.target.value);
 		}}>颜色</Input></C001>
+		<C001><Input value={`${price}`} type='number' onChange={(e) => {
+			setprice(Number(e.target.value));
+		}}>价格</Input></C001>
 		<C001><Input value={specifications} onChange={(e) => {
 			setspecifications(e.target.value);
 		}}>规格</Input></C001>
@@ -71,6 +75,7 @@ const page: NextPage<IProps> = ({ data }) => {
 					id,
 					name,
 					type,
+					price,
 					sort,
 					color,
 					description,
