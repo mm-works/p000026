@@ -77,3 +77,19 @@ CREATE TABLE swiper (
 
 COMMENT ON TABLE swiper IS '首页轮播图片';
 COMMENT ON COLUMN swiper.id IS '图片ID';
+
+DROP TABLE IF EXISTS news;
+CREATE TABLE news (
+	id text not null,
+	title text,
+	time bigint,
+	author text,
+	content text
+) WITH (oids = false);
+
+COMMENT ON TABLE news IS '新闻资讯';
+COMMENT ON COLUMN news.id IS 'ID';
+COMMENT ON COLUMN news.title IS '新闻标题';
+COMMENT ON COLUMN news.time IS '发布时间';
+COMMENT ON COLUMN news.author IS '作者';
+COMMENT ON COLUMN news.content IS '新闻内容';
