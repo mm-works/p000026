@@ -2,7 +2,7 @@ import { GetServerSideProps, NextPage, PageConfig } from 'next';
 import Head from 'next/head';
 import { ReactNode, useState } from 'react';
 import an49 from '@mmstudio/an000049';
-import { Col, Input, Row, Spacer, Text, Textarea, useToasts } from '@geist-ui/react';
+import { Col, Input, Row, Spacer, Text, useToasts } from '@geist-ui/react';
 import router from 'next/router';
 import Button from '../../components/c002';
 import RichEditor from '../../components/c003';
