@@ -102,7 +102,7 @@ function C002({ data }: { data: IData; }) {
 		<Col span={12}>
 			<Link href={href}>
 				<a className='s001'>
-					<h2>{title}</h2>
+					<h5>{title}</h5>
 					<div>发布时间:{tm}</div>
 				</a>
 			</Link>
@@ -110,7 +110,7 @@ function C002({ data }: { data: IData; }) {
 		<Spacer x={2} />
 		<Col span={12}>
 			<Link href={edit}>
-				<Button>修改</Button>
+				<Button>编辑</Button>
 			</Link>
 			<Button type='error' onClick={async () => {
 				setVisible(true);

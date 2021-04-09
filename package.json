@@ -31,6 +31,8 @@
 		"@mmstudio/an000046": "^1.0.0",
 		"@mmstudio/an000049": "^1.1.0",
 		"@mmstudio/an000053": "^1.0.1",
+		"@mmstudio/an000055": "^1.0.0",
+		"@mmstudio/an000056": "^1.0.0",
 		"@mmstudio/schedule": "^2.0.2",
 		"@uppy/core": "^1.16.2",
 		"@uppy/react": "^1.11.5",

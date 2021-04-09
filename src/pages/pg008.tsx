@@ -84,7 +84,7 @@ function C001({ data }: { data: string[] }) {
  */
 function C002() {
 	return <>
-		<Uploader multiple={true} endpoint={s001} onChange={(v: R1) => {
+		<Uploader multiple={true} endpoint={s001} onChange={(v: R1[]) => {
 			window.location.reload();
 		}} />
 	</>

@@ -61,7 +61,7 @@ function C001({ data }: { data: ITbnews; }) {
 			settitle(e.target.value);
 		}}>标题</Input>
 		<Text>详情</Text>
-		<RichEditor value={data.content} onChange={(e) => {
+		<RichEditor defaultValue={data.content} onChange={(e) => {
 			setcontent(e);
 		}}></RichEditor>
 		<div>

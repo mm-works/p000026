@@ -106,7 +106,11 @@ function C002({ data: original }: { data: ITbtypes[]; }) {
 			<Link href={`/pg002/${it.id}`}>{it.name}</Link>
 		</>;
 		const cover = it.cover && <>
-			<img src={getfileuri(it.cover)} />
+			<Link href={`/pg002/${it.id}`}>
+				<a>
+					<img width={200} src={getfileuri(it.cover)} />
+				</a>
+			</Link>
 		</>;
 		const op = <>
 			<Button>

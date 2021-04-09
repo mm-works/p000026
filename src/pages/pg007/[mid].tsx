@@ -32,13 +32,15 @@ const page: NextPage<IProps> = ({ data, mid }) => {
 		</Head>
 		<Spacer y={6} />
 		<C002 mid={mid} onUploadedFiles={(files) => {
-			setimgs(imgs.concat(files.map((file) => {
-				return {
-					id: file.id,
-					mid,
-					src: file.fid
-				}
-			})));
+			setimgs((imgs) => {
+				return imgs.concat(files.map((file) => {
+					return {
+						id: file.id,
+						mid,
+						src: file.fid
+					};
+				}))
+			});
 		}}></C002>
 		<Spacer y={3} />
 		<C001 data={imgs.map((it) => {
@@ -98,10 +100,8 @@ function C001({ data }: { data: string[] }) {
 function C002({ onUploadedFiles, mid }: { onUploadedFiles(files: R1[]): void; mid: string; }) {
 	const endpoint = `${s001}/${mid}`;
 	return <>
-		<Uploader endpoint={endpoint} multiple={true} onChange={(v: R1) => {
-			setTimeout(() => {
-				onUploadedFiles([v]);
-			}, 100);
+		<Uploader endpoint={endpoint} multiple={true} onChange={(v: R1[]) => {
+			onUploadedFiles(v);
 		}} />
 	</>
 }

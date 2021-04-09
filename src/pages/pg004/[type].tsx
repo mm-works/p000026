@@ -9,10 +9,14 @@ import { Result as R1 } from '../api/pg004/s001/[id]';
 import getfileuri from '../../atoms/a001';
 
 const s001 = '/api/pg004/s001';
+
+
+type IData = Pick<ITbmaterial, "id" | "name" | "type" | "cover" | "color" | "price" | "specifications" | "no" | "state" | "tmup" | "tmdown" | "sort">;
+
 interface IProps {
 	page: number;
 	count: number;
-	data: ITbmaterial[];
+	data: IData[];
 	type: number;
 }
 
@@ -61,7 +65,7 @@ export const getServerSideProps: GetServerSideProps<IProps, { type: string; }> =
 	const total = Number(size);
 	let count = parseInt(`${total / pagesize}`);
 	const dt2 = db<ITbmaterial>('material');
-	const data = await dt2.select('*').where({
+	const data = await dt2.select('color', 'cover', 'id', 'name', 'no', 'price', 'sort', 'specifications', 'state', 'tmdown', 'tmup', 'type').where({
 		type
 	}).limit(pagesize).offset(offset).orderBy('sort', 'desc');
 	if (total % pagesize) {
@@ -98,17 +102,10 @@ function formatdt(tm: number) {
 	return new Date(Number(tm)).toLocaleDateString();
 }
 
-function formatdesc(val: string) {
-	if (!val || val.length < 20) {
-		return val;
-	}
-	return val.substr(0, 20) + '...';
-}
-
 /**
  * 列表
  */
-function C002({ data: original }: { data: ITbmaterial[]; }) {
+function C002({ data: original }: { data: IData[]; }) {
 	const data = original.map((it) => {
 		const name = <>
 			<Link href={`/pg006/${it.id}`}>{it.name}</Link>
@@ -126,7 +123,6 @@ function C002({ data: original }: { data: ITbmaterial[]; }) {
 		return {
 			...it,
 			cover,
-			description: formatdesc(it.description),
 			state: it.state === 2 ? '已下架' : '在售',
 			tmup: formatdt(it.tmup),
 			tmdown: formatdt(it.tmdown),
@@ -141,7 +137,6 @@ function C002({ data: original }: { data: ITbmaterial[]; }) {
 			<Table.Column prop='color' label='颜色' ></Table.Column>
 			<Table.Column prop='price' label='价格' ></Table.Column>
 			<Table.Column prop='specifications' label='规格' ></Table.Column>
-			<Table.Column prop='description' label='描述' ></Table.Column>
 			<Table.Column prop='no' label='存货数量' ></Table.Column>
 			<Table.Column prop='state' label='状态：1 在售 2 已下架' ></Table.Column>
 			<Table.Column prop='tmup' label='上架时间'></Table.Column>
@@ -162,7 +157,7 @@ function C003({ page, count }: { page: number; count: number; }) {
 /**
  * 删除按钮
  */
-function C004({ data }: { data: ITbmaterial; }) {
+function C004({ data }: { data: IData; }) {
 	const { setVisible, bindings } = useModal();
 	const [, toast] = useToasts();
 	const url = `${s001}/${data.id}`;

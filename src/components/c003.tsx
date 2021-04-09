@@ -76,7 +76,7 @@ export interface ComponentProps {
 	pollInterval?: never;
 }
 
-export default function RichEditor({ value, onChange }: ComponentProps) {
+export default function RichEditor({ value, onChange, defaultValue }: ComponentProps) {
 	const toolbarOptions = [
 		['bold', 'italic', 'underline', 'strike'],        // toggled buttons
 		['blockquote', 'code-block'],
@@ -97,5 +97,5 @@ export default function RichEditor({ value, onChange }: ComponentProps) {
 		['clean'],                                         // remove formatting button
 		['image', 'code-block']
 	];
-	return <ReactQuill defaultValue={value} theme="snow" modules={{ toolbar: toolbarOptions }} onChange={onChange}></ReactQuill>;
+	return <ReactQuill defaultValue={defaultValue} value={value} theme="snow" modules={{ toolbar: toolbarOptions }} onChange={onChange}></ReactQuill>;
 }

@@ -47,7 +47,7 @@ const page: NextPage<IProps> = ({ type }) => {
 			}}>规格</Input></C001>
 			<C001>
 				<Text>描述</Text>
-				<RichEditor onChange={(e) => {
+				<RichEditor value={description} onChange={(e) => {
 					setdescription(e);
 				}}></RichEditor></C001>
 			<C001><Input value={`${no}`} type='number' onChange={(e) => {
@@ -116,7 +116,7 @@ export default page;
 
 function C001({ children }: { children: ReactNode; }) {
 	return <Row justify='center'>
-		<Col span={6}>{children}</Col>
+		<Col span={18}>{children}</Col>
 	</Row>;
 }
 

@@ -7,8 +7,19 @@ import '@uppy/dashboard/dist/style.css';
 import { useToasts } from '@geist-ui/react';
 import { useState } from 'react';
 
-export default function Uploader<T>({ onChange, endpoint, multiple }: { onChange(value: T): void; endpoint: string; multiple: boolean; }) {
+export default function Uploader<T>({ onChange, endpoint, multiple }: {
+	onChange(value: T[]): void;
+	endpoint: string;
+	multiple: true;
+}): JSX.Element;
+export default function Uploader<T>({ onChange, endpoint, multiple }: {
+	onChange(value: T): void;
+	endpoint: string;
+	multiple: false;
+}): JSX.Element;
+export default function Uploader<T>({ onChange, endpoint, multiple }: { onChange(value: T[] | T): void; endpoint: string; multiple: boolean; }) {
 	const [, toast] = useToasts();
+	const [, setfiles] = useState<T[]>([]);
 	const [open, setopen] = useState(false);
 	const uppy = useUppy(() => {
 		const uppy = Uppy({
@@ -29,15 +40,19 @@ export default function Uploader<T>({ onChange, endpoint, multiple }: { onChange
 			endpoint
 		});
 		uppy.on('complete', (result) => {
-			const [success] = result.successful;
-			if (success) {
-				const content = success.response.body as T;
+			const res = result.successful;
+			if (res && res.length > 0) {
 				toast({
 					text: '上传成功',
 					type: 'success'
 				});
-				setopen(false);
-				onChange(content);
+				const newfiles = res.map((s) => {
+					return s.response.body as T;
+				});
+				setfiles((files) => {
+					return [...files, ...newfiles];
+				});
+				// setopen(false);
 			}
 		});
 		return uppy;
@@ -48,6 +63,17 @@ export default function Uploader<T>({ onChange, endpoint, multiple }: { onChange
 		}} >上传</Button>
 		<DashboardModal uppy={uppy} open={open} onRequestClose={() => {
 			setopen(false);
+			setfiles((files) => {
+				setTimeout(() => {
+					if (multiple) {
+						onChange(files);
+					} else {
+						const [file] = files;
+						onChange(file);
+					}
+				}, 0);
+				return [];
+			});
 		}} />
 	</>;
 }

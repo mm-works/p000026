@@ -57,7 +57,7 @@ const page: NextPage<IProps> = ({ data }) => {
 		}}>规格</Input></C001>
 		<C001>
 			<Text>描述</Text>
-			<RichEditor value={description} onChange={(e) => {
+			<RichEditor defaultValue={description} onChange={(e) => {
 				setdescription(e);
 			}}></RichEditor></C001>
 		<C001><Input value={`${no}`} type='number' onChange={(e) => {
