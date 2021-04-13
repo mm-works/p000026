@@ -1,7 +1,6 @@
 import { AppContext, AppInitialProps, NextWebVitalsMetric } from 'next/app';
 import { CssBaseline, GeistProvider } from '@geist-ui/react';
 import '../../styles/globals.css';
-import { SWRConfig } from 'swr';
 import anylogger from 'anylogger';
 import Header from '../components/c005';
 
@@ -13,21 +12,11 @@ export function reportWebVitals(metric: NextWebVitalsMetric) {
 
 function App({ Component, pageProps }: AppInitialProps & AppContext) {
 	return (
-		<SWRConfig
-			value={{
-				// refreshInterval: 10000,
-				async fetcher(url: string) {
-					const res = await fetch(url);
-					return res.json();
-				},
-			}}
-		>
-			<GeistProvider>
-				<CssBaseline />
-				<Header />
-				<Component {...pageProps} />
-			</GeistProvider>
-		</SWRConfig>
+		<GeistProvider>
+			<CssBaseline />
+			<Header />
+			<Component {...pageProps} />
+		</GeistProvider>
 	);
 }
 

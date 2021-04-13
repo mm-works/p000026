@@ -1,4 +1,4 @@
-import { GetServerSideProps, NextPage, PageConfig } from 'next';
+import { GetServerSideProps, NextApiRequest, NextApiResponse, NextPage, PageConfig } from 'next';
 import Head from 'next/head';
 import router from 'next/router';
 import { ReactNode, useState } from 'react';
@@ -6,6 +6,8 @@ import { Col, Input, Row, Spacer, Text, useToasts } from '@geist-ui/react';
 import Button from '../../components/c002';
 import RichEditor from '../../components/c003';
 import { Message as M1, Result as R1 } from '../api/pg005/s001';
+import a006 from '../../atoms/a006';
+import a005 from '../../atoms/a005';
 
 const s001 = '/api/pg005/s001';
 interface IProps {
@@ -122,6 +124,14 @@ function C001({ children }: { children: ReactNode; }) {
 
 // pre-render this page on each request
 export const getServerSideProps: GetServerSideProps<IProps> = async (context) => {
+	const req = context.req as NextApiRequest;
+	const res = context.res as NextApiResponse;
+	const user = await a006(req);
+	if (!user) {
+		// 跳转页面进行登录
+		a005(req, res);
+		return;
+	}
 	const type = Number(context.params.type);
 	return Promise.resolve({
 		props: {

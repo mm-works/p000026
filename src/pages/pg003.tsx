@@ -1,4 +1,4 @@
-import { NextPage, PageConfig } from 'next';
+import { GetServerSideProps, NextApiRequest, NextApiResponse, NextPage, PageConfig } from 'next';
 import Head from 'next/head';
 import router from 'next/router';
 import { ReactNode, useState } from 'react';
@@ -8,6 +8,8 @@ import { Message as M1, Result as R1 } from './api/pg003/s001';
 import { Result as R2 } from './api/pg003/s002';
 import getfileuri from '../atoms/a001';
 import Uploader from '../components/c004';
+import a006 from '../atoms/a006';
+import a005 from '../atoms/a005';
 
 const s002 = '/api/pg003/s002';
 const s001 = '/api/pg003/s001';
@@ -82,6 +84,22 @@ export const config: PageConfig = {
 };
 
 export default page;
+
+// pre-render this page on each request
+export const getServerSideProps: GetServerSideProps<IProps> = async (context) => {
+	const req = context.req as NextApiRequest;
+	const res = context.res as NextApiResponse;
+	const user = await a006(req);
+	if (!user) {
+		// 跳转页面进行登录
+		a005(req, res);
+		return;
+	}
+	return {
+		props: {}
+	};
+};
+
 
 function C001({ children }: { children: ReactNode; }) {
 	return <Row justify='center'>

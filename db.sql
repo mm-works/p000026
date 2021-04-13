@@ -93,3 +93,42 @@ COMMENT ON COLUMN news.title IS '新闻标题';
 COMMENT ON COLUMN news.time IS '发布时间';
 COMMENT ON COLUMN news.author IS '作者';
 COMMENT ON COLUMN news.content IS '新闻内容';
+
+DROP TABLE IF EXISTS users;
+CREATE TABLE users (
+    id text NOT NULL,
+    name text,
+    avatar text,
+    phone text,
+    sex smallint,
+    CONSTRAINT users_id_unique UNIQUE (id),
+    CONSTRAINT users_pkey PRIMARY KEY (id)
+) WITH (oids = false);
+
+CREATE INDEX users_id_index ON users USING btree (id);
+COMMENT ON TABLE users IS '用户表';
+COMMENT ON COLUMN users.id IS '用户ID';
+COMMENT ON COLUMN users.name IS '用户姓名';
+COMMENT ON COLUMN users.avatar IS '头像';
+COMMENT ON COLUMN users.phone IS '手机号';
+COMMENT ON COLUMN users.sex IS '性别';
+
+DROP TABLE IF EXISTS auth;
+CREATE TABLE auth (
+    id text,
+    userid text,
+    type text,
+    name text,
+    token text,
+    lastactive bigint,
+    lastip text
+) WITH (oids = false);
+
+COMMENT ON TABLE auth IS '用户授权信息';
+COMMENT ON COLUMN auth.id IS '用户授权信息id';
+COMMENT ON COLUMN auth.userid IS '用户ID，users.id';
+COMMENT ON COLUMN auth.type IS '登录类型（手机号 邮箱 用户名）或第三方应用名称（微信 微博等）';
+COMMENT ON COLUMN auth.name IS '标识（手机号 邮箱 用户名或第三方应用的唯一标识）';
+COMMENT ON COLUMN auth.token IS '密码凭证（站内的保存密码，站外的不保存或保存token）';
+COMMENT ON COLUMN auth.lastactive IS '最后一次关键性操作时间';
+COMMENT ON COLUMN auth.lastip IS '最后一次关键性操作ip地址';

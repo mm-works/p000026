@@ -1,4 +1,4 @@
-import { GetServerSideProps, NextPage, PageConfig } from 'next';
+import { GetServerSideProps, NextApiRequest, NextApiResponse, NextPage, PageConfig } from 'next';
 import Head from 'next/head';
 import router from 'next/router';
 import { useEffect, useState } from 'react';
@@ -8,6 +8,8 @@ import Button from '../components/c002';
 import { Message as M1, Result as R1 } from './api/pg010/s001';
 import set from '@mmstudio/an000055';
 import get from '@mmstudio/an000056';
+import a006 from '../atoms/a006';
+import a005 from '../atoms/a005';
 
 const s001 = '/api/pg010/s001';
 interface IProps {
@@ -32,6 +34,22 @@ export const config: PageConfig = {
 };
 
 export default page;
+
+// pre-render this page on each request
+export const getServerSideProps: GetServerSideProps<IProps> = async (context) => {
+	const req = context.req as NextApiRequest;
+	const res = context.res as NextApiResponse;
+	const user = await a006(req);
+	if (!user) {
+		// 跳转页面进行登录
+		a005(req, res);
+		return;
+	}
+	return {
+		props: {}
+	};
+};
+
 
 /**
  * 资讯发布组件

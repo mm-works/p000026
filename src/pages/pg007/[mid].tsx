@@ -1,4 +1,4 @@
-import { GetServerSideProps, NextPage, PageConfig } from 'next';
+import { GetServerSideProps, NextApiRequest, NextApiResponse, NextPage, PageConfig } from 'next';
 import Head from 'next/head';
 import { useState } from 'react';
 import an49 from '@mmstudio/an000049';
@@ -11,6 +11,8 @@ import getfileuri from '../../atoms/a001';
 import { Result as R1 } from '../api/pg007/s001/[mid]';
 import { Result as R2 } from '../api/pg007/s002/[id]';
 import Uploader from '../../components/c004';
+import a006 from '../../atoms/a006';
+import a005 from '../../atoms/a005';
 
 const s002 = '/api/pg007/s002';
 const s001 = '/api/pg007/s001';
@@ -58,6 +60,14 @@ export const config: PageConfig = {
 export default page;
 
 export const getServerSideProps: GetServerSideProps<IProps, { mid: string; }> = async (context) => {
+	const req = context.req as NextApiRequest;
+	const res = context.res as NextApiResponse;
+	const user = await a006(req);
+	if (!user) {
+		// 跳转页面进行登录
+		a005(req, res);
+		return;
+	}
 	const mid = context.params.mid;
 	const db = an49();
 	const dt = db<ITbpictures>('pictures');

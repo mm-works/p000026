@@ -1,4 +1,4 @@
-import { GetServerSideProps, NextPage, PageConfig } from 'next';
+import { GetServerSideProps, NextApiRequest, NextApiResponse, NextPage, PageConfig } from 'next';
 import Head from 'next/head';
 import an49 from '@mmstudio/an000049';
 import { Col, Modal, Row, Table, useModal, useToasts } from '@geist-ui/react';
@@ -7,6 +7,8 @@ import Button from '../../components/c002';
 import Pagination from '../../components/c001';
 import { Result as R1 } from '../api/pg004/s001/[id]';
 import getfileuri from '../../atoms/a001';
+import a006 from '../../atoms/a006';
+import a005 from '../../atoms/a005';
 
 const s001 = '/api/pg004/s001';
 
@@ -55,6 +57,14 @@ export const config: PageConfig = {
 export default page;
 
 export const getServerSideProps: GetServerSideProps<IProps, { type: string; }> = async (context) => {
+	const req = context.req as NextApiRequest;
+	const res = context.res as NextApiResponse;
+	const user = await a006(req);
+	if (!user) {
+		// 跳转页面进行登录
+		a005(req, res);
+		return;
+	}
 	const type = Number(context.params.type);
 	const pagesize = 10;
 	const page = Number(context.query.page) || 1;

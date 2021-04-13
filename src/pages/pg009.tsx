@@ -1,4 +1,4 @@
-import { GetServerSideProps, NextPage, PageConfig } from 'next';
+import { GetServerSideProps, NextApiRequest, NextApiResponse, NextPage, PageConfig } from 'next';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { Col, Row, Spacer, Modal, useModal, useToasts } from '@geist-ui/react';
@@ -7,6 +7,8 @@ import an49 from '@mmstudio/an000049';
 import Pagination from '../components/c001';
 import Link from 'next/link';
 import { Message as M1, Query as Q1, Result as R1 } from './api/pg009/s001';
+import a006 from '../atoms/a006';
+import a005 from '../atoms/a005';
 
 const s001 = '/api/pg009/s001';
 type IData = Pick<ITbnews, 'id' | "title" | "time">;
@@ -49,6 +51,14 @@ export default page;
 
 // pre-render this page on each request
 export const getServerSideProps: GetServerSideProps<IProps> = async (context) => {
+	const req = context.req as NextApiRequest;
+	const res = context.res as NextApiResponse;
+	const user = await a006(req);
+	if (!user) {
+		// 跳转页面进行登录
+		a005(req, res);
+		return;
+	}
 	const pagesize = 10;
 	const page = Number(context.query.page) || 1;
 	const offset = (page - 1) * pagesize;

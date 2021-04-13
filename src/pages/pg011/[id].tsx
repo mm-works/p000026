@@ -1,7 +1,9 @@
-import { GetServerSideProps, NextPage, PageConfig } from 'next';
+import { GetServerSideProps, NextApiRequest, NextApiResponse, NextPage, PageConfig } from 'next';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import an49 from '@mmstudio/an000049';
+import a006 from '../../atoms/a006';
+import a005 from '../../atoms/a005';
 
 interface IProps {
 	data: ITbnews;
@@ -29,6 +31,14 @@ export default page;
 
 // pre-render this page on each request
 export const getServerSideProps: GetServerSideProps<IProps> = async (context) => {
+	const req = context.req as NextApiRequest;
+	const res = context.res as NextApiResponse;
+	const user = await a006(req);
+	if (!user) {
+		// 跳转页面进行登录
+		a005(req, res);
+		return;
+	}
 	const id = context.params.id as string;
 	const db = an49();
 	const dt = db<ITbnews>('news');

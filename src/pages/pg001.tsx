@@ -1,4 +1,4 @@
-import { GetServerSideProps, NextPage } from 'next';
+import { GetServerSideProps, NextApiRequest, NextApiResponse, NextPage } from 'next';
 import anylogger from 'anylogger';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -8,6 +8,8 @@ import Button from '../components/c002';
 import Pagination from '../components/c001';
 import { Result as R1 } from './api/pg001/s001/[id]';
 import getfileuri from '../atoms/a001';
+import a006 from '../atoms/a006';
+import a005 from '../atoms/a005';
 
 const s001 = '/api/pg001/s001';
 const logger = anylogger('pg001');
@@ -46,6 +48,14 @@ const page: NextPage<IProps> = ({ count, page, data }) => {
 };
 
 export const getServerSideProps: GetServerSideProps<IProps> = async (context) => {
+	const req = context.req as NextApiRequest;
+	const res = context.res as NextApiResponse;
+	const user = await a006(req);
+	if (!user) {
+		// 跳转页面进行登录
+		a005(req, res);
+		return;
+	}
 	const pagesize = 10;
 	const page = Number(context.query.page) || 1;
 	const offset = (page - 1) * pagesize;
