@@ -30,6 +30,11 @@ export type Message = {
 const handler = nextConnect<NextApiRequest, NextApiResponse<Result>>();
 
 handler.post(async (req, res) => {
+	logger.debug('NODE_ENV', process.env.NODE_ENV);
+	if (process.env.NODE_ENV === 'production') {
+		res.status(500).end('不允许注册,请联系管理员');
+		return;
+	}
 	logger.debug('message', req.body);
 	const { usr, psw, csrf, phone, sex } = req.body as Message;
 	const valid = a004(csrf);
