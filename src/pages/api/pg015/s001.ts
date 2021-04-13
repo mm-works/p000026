@@ -32,7 +32,10 @@ const handler = nextConnect<NextApiRequest, NextApiResponse<Result>>();
 handler.post(async (req, res) => {
 	logger.debug('NODE_ENV', process.env.NODE_ENV);
 	if (process.env.NODE_ENV === 'production') {
-		res.status(500).end('不允许注册,请联系管理员');
+		res.status(500).json({
+			ok: false,
+			message: '不允许注册,请联系管理员'
+		});
 		return;
 	}
 	logger.debug('message', req.body);
@@ -43,7 +46,10 @@ handler.post(async (req, res) => {
 		return;
 	}
 	if (!usr || !psw) {
-		res.status(500).end('Params could not be null');
+		res.status(500).json({
+			ok: false,
+			message: '字段不能为空'
+		});
 		return;
 	}
 	const md5 = createHash('md5').update(psw).digest('hex');
