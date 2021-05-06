@@ -31,14 +31,24 @@ const page: NextPage<IProps> = ({ data }) => {
 		<Head>
 			<title>首页轮播图</title>
 		</Head>
-		<Spacer y={6} />
-		<C002 />
-		<Spacer y={3} />
-		<C001 data={imgs.map((it) => {
-			return getfileuri(it.id);
-		})}></C001>
-		<Spacer y={3} />
-		<C003 data={imgs} ></C003>
+		<div className='cls001'>
+			<Row justify='center'>
+				<Col span={12}>
+					<C001 data={imgs.map((it) => {
+						return getfileuri(it.id);
+					})}></C001>
+					<C002 />
+				</Col>
+				<Col span={12}>
+					<C003 data={imgs} ></C003>
+				</Col>
+			</Row>
+		</div>
+		<style jsx>{`
+.cls001{
+margin: 5rem;
+}
+`}</style>
 	</>;
 };
 
@@ -77,6 +87,7 @@ function C001({ data }: { data: string[] }) {
 			slidesPerView={1}
 			autoplay
 			keyboard
+			loop
 			onSlideChange={() => console.log('slide change')}
 			onSwiper={(swiper) => console.log(swiper)}
 		>
@@ -94,9 +105,16 @@ function C001({ data }: { data: string[] }) {
  */
 function C002() {
 	return <>
-		<Uploader multiple={true} endpoint={s001} onChange={(v: R1[]) => {
-			window.location.reload();
-		}} />
+		<div>
+			<Uploader multiple={true} endpoint={s001} onChange={(v: R1[]) => {
+				window.location.reload();
+			}} />
+		</div>
+		<style jsx>{`
+div{
+text-align: center;
+}
+`}</style>
 	</>
 }
 
@@ -138,5 +156,10 @@ function C003({ data }: { data: ITbswiper[]; }) {
 				</Row>
 			</li>;
 		})}
+		<style jsx>{`
+ol{
+margin-left: 5rem;
+}
+`}</style>
 	</ol>;
 }

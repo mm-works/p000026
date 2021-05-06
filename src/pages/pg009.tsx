@@ -1,7 +1,7 @@
 import { GetServerSideProps, NextApiRequest, NextApiResponse, NextPage, PageConfig } from 'next';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
-import { Col, Row, Spacer, Modal, useModal, useToasts } from '@geist-ui/react';
+import { Modal, useModal, useToasts } from '@geist-ui/react';
 import Button from '../components/c002';
 import an49 from '@mmstudio/an000049';
 import Pagination from '../components/c001';
@@ -28,17 +28,28 @@ const page: NextPage<IProps> = ({ page, count, data }) => {
 			<Head>
 				<title>资讯发布</title>
 			</Head>
-			<Row>
+			<div className='cls001'>
 				<Button>
 					<Link href='/pg010'>
-						我要发布新资讯
+						<a className='cls002' target='_blank'>
+							发布新资讯
+						</a>
 					</Link>
 				</Button>
-			</Row>
-			<Row>
+			</div>
+			<div>
 				<C001 data={data}></C001>
-			</Row>
+			</div>
 			<Pagination page={page} count={count} ></Pagination>
+			<style jsx>{`
+.cls001{
+display: flex;
+justify-content: center;
+}
+.cls002:hover{
+color:#fff;
+}
+`}</style>
 		</>
 	);
 };
@@ -107,20 +118,19 @@ function C002({ data }: { data: IData; }) {
 	const title = data.title;
 	const url = s001;
 	const id = data.id;
-	const edit = `pg012/${id}`;
-	return <Row>
-		<Col span={12}>
+	const edit = `/pg012/${id}`;
+	return <div className='cls001'>
+		<span >
 			<Link href={href}>
-				<a className='s001'>
+				<a className='cls002'>
 					<h5>{title}</h5>
 					<div>发布时间:{tm}</div>
 				</a>
 			</Link>
-		</Col>
-		<Spacer x={2} />
-		<Col span={12}>
+		</span>
+		<span >
 			<Link href={edit}>
-				<Button>编辑</Button>
+				<a>编辑</a>
 			</Link>
 			<Button type='error' onClick={async () => {
 				setVisible(true);
@@ -153,11 +163,17 @@ function C002({ data }: { data: IData; }) {
 					}
 				}}>确定</Modal.Action>
 			</Modal>
-		</Col>
+		</span>
 		<style jsx>{`
-.s001:hover{
+.cls001{
+transition: all 500ms;
+}
+.cls001:hover{
+background-color: silver;
+}
+.cls002:hover{
 background-color: red;
 }
 `}</style>
-	</Row>;
+	</div>;
 }

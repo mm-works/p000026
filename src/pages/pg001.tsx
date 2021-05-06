@@ -2,7 +2,7 @@ import { GetServerSideProps, NextApiRequest, NextApiResponse, NextPage } from 'n
 import anylogger from 'anylogger';
 import Head from 'next/head';
 import Link from 'next/link';
-import { Col, Modal, Row, Table, useModal, useToasts } from '@geist-ui/react';
+import { Col, Modal, useModal, useToasts } from '@geist-ui/react';
 import an49 from '@mmstudio/an000049';
 import Button from '../components/c002';
 import Pagination from '../components/c001';
@@ -28,21 +28,17 @@ const page: NextPage<IProps> = ({ count, page, data }) => {
 			<Head>
 				<title>建材分类</title>
 			</Head>
-			<Row justify='end'>
-				<Col span={5}>
-					<C001></C001>
-				</Col>
-			</Row>
-			<Row>
+			<C001></C001>
+			<div>
 				<Col>
 					<C002 data={data}></C002>
 				</Col>
-			</Row>
-			<Row>
+			</div>
+			<div>
 				<Col>
 					<C003 count={count} page={page}></C003>
 				</Col>
-			</Row>
+			</div>
 		</>
 	);
 };
@@ -54,7 +50,13 @@ export const getServerSideProps: GetServerSideProps<IProps> = async (context) =>
 	if (!user) {
 		// 跳转页面进行登录
 		a005(req, res);
-		return;
+		return {
+			props: {
+				count: 0,
+				data: null,
+				page: 0
+			}
+		};
 	}
 	const pagesize = 10;
 	const page = Number(context.query.page) || 1;
@@ -88,64 +90,98 @@ export default page;
  */
 function C001() {
 	return <>
-		<Row>
-			<Col>
-				<Button>
-					<Link href='/pg003'>
-						新增
+		<div>
+			<Link href='/pg003'>
+				<a target='_blank'>
+					新增
+				</a>
 			</Link>
-				</Button>
-			</Col>
-			<Col>
-				<Button>
-					<Link href='/pg008'>
-						首页轮播图
-			</Link>
-				</Button>
-			</Col>
-		</Row>
+		</div>
+		<style jsx>{`
+div::before{
+content: '+++';
+font-size: 1.5rem;
+color: #2b81a3a4;
+}
+div{
+float: right;
+font-size: 2rem;
+margin-right: 10rem;
+}
+`}</style>
 	</>;
 }
 
 /**
  * 列表
  */
-function C002({ data: original }: { data: ITbtypes[]; }) {
-	const data = original.map((it) => {
-		const name = <>
-			<Link href={`/pg002/${it.id}`}>{it.name}</Link>
-		</>;
-		const cover = it.cover && <>
-			<Link href={`/pg002/${it.id}`}>
-				<a>
-					<img width={200} src={getfileuri(it.cover)} />
-				</a>
-			</Link>
-		</>;
-		const op = <>
-			<Button>
-				<Link href={`/pg002/${it.id}`}>编辑</Link>
-			</Button>
-			<Button>
-				<Link href={`/pg004/${it.type}`}>材料管理</Link>
-			</Button>
-			<C004 data={it}></C004>
-		</>;
-		return {
-			...it,
-			name,
-			op,
-			cover
-		};
-	});
+function C002({ data }: { data: ITbtypes[]; }) {
 	return <>
-		<Table data={data}>
-			<Table.Column prop='name' label='名称' ></Table.Column>
-			<Table.Column prop='type' label='类型值'></Table.Column>
-			<Table.Column prop='sort' label='优先级'></Table.Column>
-			<Table.Column prop='cover' label='封面图片'></Table.Column>
-			<Table.Column prop='op' label='操作'></Table.Column>
-		</Table>
+		<table>
+			<tbody>
+				{data.map((it, key) => {
+					return <tr key={key}>
+						<td className='cls001'>
+							<Link href={`/pg002/${it.id}`}>
+								<a>
+									{it.cover ? <img width={200} src={getfileuri(it.cover)} />
+										: <span>缺少封面图</span>
+									}
+								</a>
+							</Link>
+						</td>
+						<td>
+							<Link href={`/pg002/${it.id}`}>
+								<a title={it.name}>
+									<div>{it.name}</div>
+									<div>
+										<span>类型:<span>{it.type}</span></span>
+									</div>
+									<div>
+										<span title='数值越大,排序越靠前'>排序:<span>{it.sort}</span></span>
+									</div>
+								</a>
+							</Link>
+						</td>
+						<td>
+							<Button>
+								<Link href={`/pg002/${it.id}`}>编辑</Link>
+							</Button>
+							<Button>
+								<Link href={`/pg004/${it.type}`}>材料管理</Link>
+							</Button>
+							<C004 data={it}></C004>
+						</td>
+					</tr>
+				})}
+			</tbody>
+		</table>
+		<style jsx>{`
+.cls001{
+width: 200px;
+padding-left: 2rem;
+}
+table{
+width:80%;
+margin-left: auto;
+margin-right: auto;
+}
+tbody{
+text-align: center;
+}
+tr{
+border-style: dashed;
+}
+td{
+padding:0;
+border-style: dashed;
+border-width: 0.1rem;
+border-left-style: none;
+border-right-style: none;
+font-size:1.2rem;
+color: #316e57;
+}
+`}</style>
 	</>;
 }
 
@@ -153,7 +189,15 @@ function C002({ data: original }: { data: ITbtypes[]; }) {
  * 分页
  */
 function C003({ page, count }: { page: number; count: number; }) {
-	return <Pagination page={page} count={count} ></Pagination>;
+	return <div>
+		<Pagination page={page} count={count} ></Pagination>
+		<style jsx>{`
+div{
+float: right;
+margin-right: 10rem;
+}
+`}</style>
+	</div>
 }
 
 /**
